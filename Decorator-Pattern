@@ -1,0 +1,96 @@
+
+using System;
+
+// 1. Component Interface
+public interface ICoffee
+{
+    string GetDescription();
+    double Cost();
+}
+
+// 2. Concrete Component
+public class SimpleCoffee : ICoffee
+{
+    public string GetDescription()
+    {
+        return "Simple Coffee";
+    }
+
+    public double Cost()
+    {
+        return 2.0;
+    }
+}
+
+// 3. Base Decorator
+public class CoffeeDecorator : ICoffee
+{
+    protected ICoffee coffee;
+
+    public CoffeeDecorator(ICoffee coffee)
+    {
+        this.coffee = coffee;
+    }
+
+    public virtual string GetDescription()
+    {
+        return coffee.GetDescription();
+    }
+
+    public virtual double Cost()
+    {
+        return coffee.Cost();
+    }
+}
+
+// 4. Concrete Decorator: Milk
+public class MilkDecorator : CoffeeDecorator
+{
+    public MilkDecorator(ICoffee coffee) : base(coffee)
+    {
+    }
+
+    public override string GetDescription()
+    {
+        return coffee.GetDescription() + " + Milk";
+    }
+
+    public override double Cost()
+    {
+        return coffee.Cost() + 0.5;
+    }
+}
+
+// 5. Concrete Decorator: Chocolate
+public class ChocolateDecorator : CoffeeDecorator
+{
+    public ChocolateDecorator(ICoffee coffee) : base(coffee)
+    {
+    }
+
+    public override string GetDescription()
+    {
+        return coffee.GetDescription() + " + Chocolate";
+    }
+
+    public override double Cost()
+    {
+        return coffee.Cost() + 1.0;
+    }
+}
+
+// 6. Main
+public class Program
+{
+    public static void Main()
+    {
+        ICoffee coffee = new SimpleCoffee();
+
+        coffee = new MilkDecorator(coffee);
+
+        coffee = new ChocolateDecorator(coffee);
+
+        Console.WriteLine(coffee.GetDescription());
+        Console.WriteLine("Total Cost: " + coffee.Cost());
+    }
+}
