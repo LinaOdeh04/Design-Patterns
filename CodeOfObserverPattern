@@ -1,0 +1,80 @@
+
+using System;
+using System.Collections.Generic;
+
+// 1. Observer Interface
+public interface IObserver
+{
+    void Update(float temperature, float humidity, float pressure);
+}
+
+// 2. Subject Interface
+public interface ISubject
+{
+    void RegisterObserver(IObserver observer);
+    void RemoveObserver(IObserver observer);
+    void NotifyObservers();
+}
+
+// 3. Concrete Subject
+public class WeatherData : ISubject
+{
+    private List<IObserver> observers = new List<IObserver>();
+
+    private float temperature;
+    private float humidity;
+    private float pressure;
+
+    public void RegisterObserver(IObserver observer)
+    {
+        observers.Add(observer);
+    }
+
+    public void RemoveObserver(IObserver observer)
+    {
+        observers.Remove(observer);
+    }
+
+    public void NotifyObservers()
+    {
+        foreach (IObserver observer in observers)
+        {
+            observer.Update(temperature, humidity, pressure);
+        }
+    }
+
+    public void SetMeasurements(float t, float h, float p)
+    {
+        temperature = t;
+        humidity = h;
+        pressure = p;
+
+        NotifyObservers();
+    }
+}
+
+// 4. Concrete Observer
+public class CurrentConditionsDisplay : IObserver
+{
+    public void Update(float temperature, float humidity, float pressure)
+    {
+        Console.WriteLine($"Temperature: {temperature}");
+        Console.WriteLine($"Humidity: {humidity}");
+        Console.WriteLine($"Pressure: {pressure}");
+    }
+}
+
+// 5. Main
+public class Program
+{
+    public static void Main()
+    {
+        WeatherData weather = new WeatherData();
+
+        IObserver display = new CurrentConditionsDisplay();
+
+        weather.RegisterObserver(display);
+
+        weather.SetMeasurements(25, 60, 1013);
+    }
+}
